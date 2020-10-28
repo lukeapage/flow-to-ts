@@ -13,7 +13,7 @@ const cli = argv => {
       "--inline-utility-types",
       "inline utility types when possible, defaults to 'false'"
     )
-    .option("--prettier", "use prettier for formatting")
+    .option("--prettier <path>", "use prettier for formatting")
     .option(
       "--semi",
       "add semi-colons, defaults to 'false' (depends on --prettier)"

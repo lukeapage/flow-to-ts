@@ -3,7 +3,7 @@ const traverse = require("../babel-traverse/lib/index.js").default;
 const generate = require("../babel-generator/lib/index.js").default;
 const prettier = require("prettier/standalone.js");
 const plugins = [require("prettier/parser-typescript.js")];
-
+const path = require('path');
 const transform = require("./transform.js");
 
 const parseOptions = {
@@ -54,6 +54,7 @@ const convert = (flowCode, options) => {
   }
 
   if (options && options.prettier) {
+    const prettierConfig = require(process.cwd(), options.prettier);
     const prettierOptions = {
       parser: "typescript",
       plugins,
@@ -63,7 +64,8 @@ const convert = (flowCode, options) => {
       trailingComma: options.trailingComma,
       bracketSpacing: options.bracketSpacing,
       arrowParens: options.arrowParens,
-      printWidth: options.printWidth
+      printWidth: options.printWidth,
+      ...prettierConfig
     };
     return prettier.format(tsCode, prettierOptions).trim();
   } else {

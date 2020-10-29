@@ -110,6 +110,7 @@ const QualifiedReactTypeNameMap = {
 const transform = {
   Program: {
     enter(path, state) {
+      debugger;
       const { body } = path.node;
 
       for (let i = 0; i < body.length; i++) {

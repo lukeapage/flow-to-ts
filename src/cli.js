@@ -46,7 +46,8 @@ const cli = argv => {
     )
     .option("--print-width [width]", "line width (depends on --prettier)", 80)
     .option("--write", "write output to disk instead of STDOUT")
-    .option("--delete-source", "delete the source file");
+    .option("--delete-source", "delete the source file")
+    .option("--skip-non-flow", "This skips all the files which are not annotated by @flow");
 
   program.parse(argv);
 
@@ -64,7 +65,8 @@ const cli = argv => {
     trailingComma: program.trailingComma,
     bracketSpacing: Boolean(program.bracketSpacing),
     arrowParens: program.arrowParens,
-    printWidth: parseInt(program.printWidth)
+    printWidth: parseInt(program.printWidth),
+    skipNonFlow: Boolean(program.skipNonFlow)
   };
 
   const files = new Set();
@@ -80,6 +82,9 @@ const cli = argv => {
 
     try {
       const outCode = convert(inCode, options);
+      if (typeof outCode === 'object' && outCode.skip) {
+        console.log(`skipping file: ${file} as it's not @flow prefixed`);
+      }
 
       if (program.write) {
         const extension = detectJsx(inCode) ? ".tsx" : ".ts";

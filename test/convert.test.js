@@ -33,6 +33,11 @@ describe("convert", () => {
         );
         const hasOptions = fs.existsSync(path.join(dir, "options.json"));
 
+        // for testing a subset at a time:
+        //if (dir.indexOf('interface') < 0) {
+        //  continue;
+        //}
+
         if (hasOptions) {
           const options = JSON.parse(
             fs.readFileSync(path.join(dir, "options.json"), "utf-8")

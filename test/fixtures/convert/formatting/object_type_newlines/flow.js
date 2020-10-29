@@ -1,4 +1,4 @@
-type Point = {
+type Point = {|
 
     // x
     x: number,
@@ -7,4 +7,4 @@ type Point = {
     y: number,
     // trailing newline
 
-};
+|};

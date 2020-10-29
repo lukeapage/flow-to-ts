@@ -1,3 +1,3 @@
-let obj: {
+let obj: {|
   -a: string
-};
+|};

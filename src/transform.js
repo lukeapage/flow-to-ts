@@ -536,10 +536,6 @@ const transform = {
     exit(path) {
       const { exact, properties, indexers } = path.node; // TODO: callProperties, inexact
 
-      if (exact) {
-        console.warn("downgrading exact object type");
-      }
-
       // TODO: create multiple sets of elements so that we can convert
       // {x: number, ...T, y: number} to {x: number} & T & {y: number}
       const elements = [];
@@ -578,6 +574,20 @@ const transform = {
           spreads.push(mappedType);
         }
       });
+
+      if (
+        !exact &&
+        indexers.length === 0 &&
+        path.parent.type !== "DeclareClass" &&
+        path.parent.type !== "InterfaceDeclaration"
+      ) {
+        const key = t.identifier("key");
+        key.typeAnnotation = t.tsTypeAnnotation(t.tsStringKeyword());
+
+        elements.push(
+          t.tsIndexSignature([key], t.tsTypeAnnotation(t.tsUnknownKeyword()))
+        );
+      }
 
       if (spreads.length > 0 && elements.length > 0) {
         path.replaceWith(

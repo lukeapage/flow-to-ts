@@ -1,4 +1,4 @@
-let obj: {
+let obj: {|
   ...T,
   x: number,
-};
+|};

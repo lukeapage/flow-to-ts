@@ -29,11 +29,19 @@ const convert = (flowCode, options) => {
     startLine: {},
     endLine: {}
   };
+  let skip = true;
   for (const comment of ast.comments) {
+    if (comment.value.trim() === '@flow') {
+      skip = false;
+    }
     comments.startLine[comment.loc.start.line] = comment;
     comments.endLine[comment.loc.end.line] = comment;
   }
 
+  // Skipping file if it is not @flow prefixed
+  if (options && options.skipNonFlow && skip){
+    return {skip};
+  }
   // apply our transforms, traverse mutates the ast
   const state = {
     usedUtilityTypes: new Set(),

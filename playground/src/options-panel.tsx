@@ -27,6 +27,7 @@ export type Options = {
   arrowParens: "avoid" | "always";
   printWidth: number;
   inlineUtilityTypes: boolean;
+  skipNonFlow: boolean;
 };
 
 type Props = {

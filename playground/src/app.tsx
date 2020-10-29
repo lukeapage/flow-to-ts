@@ -59,7 +59,8 @@ const defaultOptions: Options = {
   bracketSpacing: false,
   arrowParens: "avoid",
   printWidth: 80,
-  inlineUtilityTypes: false
+  inlineUtilityTypes: false,
+  skipNonFlow: false
 };
 
 class App extends React.Component<Props, State> {

@@ -81,10 +81,15 @@ const cli = argv => {
     const inCode = fs.readFileSync(inFile, "utf-8");
 
     try {
-      const outCode = convert(inCode, options);
+      let outCode = convert(inCode, options);
+
       if (typeof outCode === 'object' && outCode.skip) {
         console.log(`skipping file: ${file} as it's not @flow prefixed`);
+        continue;
       }
+
+      // Replacing all instance of // FlowExpectedError
+      outCode = outCode.replace(/\/\/.*FlowExpectedError.*\n/gm, "");
 
       if (program.write) {
         const extension = detectJsx(inCode) ? ".tsx" : ".ts";

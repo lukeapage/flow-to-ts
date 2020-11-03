@@ -267,7 +267,28 @@ const transform = {
   // All other non-leaf nodes must be processed on exit()
   TypeAnnotation: {
     exit(path) {
-      const { typeAnnotation } = path.node;
+      const { node } = path;
+      const { typeAnnotation } = node;
+
+      // const A: 'a' = 'a'; ===> const A = 'a';
+      if (
+        typeAnnotation &&
+        typeAnnotation.type === "TSLiteralType" &&
+        typeAnnotation.literal &&
+        typeAnnotation.literal.type === "StringLiteral" &&
+        path.parentPath &&
+        path.parentPath.node &&
+        path.parentPath.node.type === "Identifier" &&
+        path.parentPath.parentPath &&
+        path.parentPath.parentPath.node &&
+        path.parentPath.parentPath.node.type === "VariableDeclarator" &&
+        path.parentPath.parentPath.node.init &&
+        path.parentPath.parentPath.node.init.type === "StringLiteral"
+      ) {
+        path.remove();
+        return;
+      }
+
       path.replaceWith(t.tsTypeAnnotation(typeAnnotation));
     }
   },
@@ -367,6 +388,7 @@ const transform = {
   TypeParameter: {
     exit(path) {
       const { name, variance, bound } = path.node;
+
       if (variance) {
         console.warn("TypeScript doesn't support variance on type parameters");
       }

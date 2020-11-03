@@ -31,7 +31,7 @@ const convert = (flowCode, options) => {
   };
   let skip = true;
   for (const comment of ast.comments) {
-    if (comment.value.trim() === '@flow') {
+    if (comment.value.trim() === "@flow") {
       skip = false;
     }
     comments.startLine[comment.loc.start.line] = comment;
@@ -39,8 +39,8 @@ const convert = (flowCode, options) => {
   }
 
   // Skipping file if it is not @flow prefixed
-  if (options && options.skipNonFlow && skip){
-    return {skip};
+  if (options && options.skipNonFlow && skip) {
+    return { skip };
   }
   // apply our transforms, traverse mutates the ast
   const state = {
@@ -60,6 +60,11 @@ const convert = (flowCode, options) => {
   for (let i = 0; i < state.trailingLines; i++) {
     tsCode += "\n";
   }
+
+  tsCode = tsCode
+    .replace(/\$ReactRefCallback/g, "React.RefCallback")
+    .replace(/\$ReactRefObject/g, "React.RefObject")
+    .replace(/\$ReactRef/g, "React.Ref");
 
   if (options && options.prettier) {
     const prettierOptions = {

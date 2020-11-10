@@ -47,7 +47,10 @@ const cli = argv => {
     .option("--print-width [width]", "line width (depends on --prettier)", 80)
     .option("--write", "write output to disk instead of STDOUT")
     .option("--delete-source", "delete the source file")
-    .option("--skip-non-flow", "This skips all the files which are not annotated by @flow");
+    .option(
+      "--skip-non-flow",
+      "This skips all the files which are not annotated by @flow"
+    );
 
   program.parse(argv);
 
@@ -83,13 +86,13 @@ const cli = argv => {
     try {
       let outCode = convert(inCode, options);
 
-      if (typeof outCode === 'object' && outCode.skip) {
+      if (typeof outCode === "object" && outCode.skip) {
         console.log(`skipping file: ${file} as it's not @flow prefixed`);
         continue;
       }
 
       // Replacing all instance of // FlowExpectedError
-      outCode = outCode.replace(/\/\/.*FlowExpectedError.*\n/gm, "");
+      outCode = outCode.replace(/\/\/.*Flow(ExpectedError|FixMe).*\n/gm, "");
 
       if (program.write) {
         const extension = detectJsx(inCode) ? ".tsx" : ".ts";

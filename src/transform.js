@@ -375,7 +375,29 @@ const transform = {
   },
   TypeParameterInstantiation: {
     exit(path) {
-      const { params } = path.node;
+      let { params } = path.node;
+      if (
+        path.parent &&
+        path.parent.type === "CallExpression" &&
+        path.parent.callee &&
+        path.parent.callee.name === "createSelector"
+      ) {
+        if (params.length > 2) {
+          params = params.slice(0);
+          const returnType = params[2];
+          params.splice(2, 1);
+          params.push(returnType);
+          if (
+            params[1].type === "TSVoidKeyword" ||
+            (params[1].type === "TSTypeReference" &&
+              params[1].typeName &&
+              params[1].typeName.name === "undefined")
+          ) {
+            params.splice(1, 1);
+          }
+        }
+      }
+
       path.replaceWith(t.tsTypeParameterInstantiation(params));
     }
   },
